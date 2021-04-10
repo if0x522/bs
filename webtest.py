@@ -22,19 +22,30 @@ def index():
 def post(method,body):
     if method == 'GET':
         print('GET')
-        send_html('post.html')
+        send_html('upload.html')
     elif method == 'POST':
-        print(body)
-        #name,byt = body.split(b'\n\n',1)
-        #name = str(name,encoding='UTF-8')
-        #li = name.split('\n')
-        #imgName = li[1]
-        #i = imgName.find('filename')
-        #Img = imgName[i+10:-1]
-        #ww = open(Img,mode='wb')
-        #ww.write(byt)
-        #ww.close()
-        send_html('index.html')
+        #print(body)
+        if len(body) > 10:
+            print('abc')
+            name,byt = body.split(b'\r\n\r\n',1)
+            name = str(name,encoding='UTF-8')
+            li = name.split('\r\n')
+            imgName = li[1]
+            print(imgName)
+            i = imgName.find('filename')
+            Img = imgName[i+10:-1]
+            print(Img)
+            ww = open(Img,mode='wb')
+            ww.write(byt)
+            ww.close()
+            send_html('index.html')
+        else:
+            print('noe')
+            send_html('posts.html')
+
+def resend():
+    u = '/'
+    conn.send(b'HTTP/1.0 302 Temporary Redirect\r\nLocation: https://www.baidu.com\r\n\r\n')
 
 if s==None:
     while(True):
@@ -51,10 +62,10 @@ if s==None:
 #            headers = str(headers,encoding='UTF-8')
 #            header_list = headers.split('\n')
 #        else:
-        print('字节')
+        #print('字节')
         print(a)
         headers,body = date.split(b'\r\n\r\n',1)
-        print(body)
+        #print(body)
         headers = str(headers,encoding='UTF-8')
         header_list = headers.split('\r\n')
         method,url,protocal = header_list[0].split(' ')
@@ -62,6 +73,8 @@ if s==None:
             index()
         elif url == '/post':
             post(method,body)
+        elif url == '/re':
+            resend()
         else:
             msg = b'HTTP/1.1 200 OK\r\n\r\n404 not found'
     
